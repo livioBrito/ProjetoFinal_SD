@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  cassandra1:
+    image: cassandra:4.0
+    container_name: cassandra1
+    ports:
+      - 9042:9042
+    volumes:
+      - ~/apps/cassandra:/var/lib/cassandra
+    environment:
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    networks:
+      - cassandra-net
+
+  cassandra2:
+    image: cassandra:4.0
+    container_name: cassandra2
+    volumes:
+      - ~/apps/cassandra:/var/lib/cassandra
+    environment:
+      - CASSANDRA_DC=datacenter2
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra1
+    networks:
+      - cassandra-net
+    
+
+networks:
+  cassandra-net:
+    driver: bridge
+
+volumes:
+  cassandra-data1:
+  cassandra-data2:
